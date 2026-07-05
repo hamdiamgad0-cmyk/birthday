@@ -1,0 +1,149 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Happy Birthday! 🐾</title>
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Comic+Neue:wght=700&family=Fredoka:wght=400;600&display=swap');
+        
+        body {
+            font-family: 'Comic Neue', cursive;
+            background-color: #F9F8F3;
+            background-image: url('https://www.transparenttextures.com/patterns/cream-paper.png');
+        }
+        .star {
+            position: absolute;
+            font-size: 24px;
+            opacity: 0.6;
+            user-select: none;
+            pointer-events: none;
+        }
+        .image-box {
+            border: 4px solid #1a1a1a;
+            box-shadow: 6px 6px 0px #1a1a1a;
+            background-color: #ffffff;
+            transition: all 0.2s ease;
+        }
+        .fade-in {
+            animation: fadeIn 0.5s ease-in-out forwards;
+        }
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+    </style>
+</head>
+<body class="min-h-screen flex flex-col items-center justify-center relative overflow-hidden p-4">
+
+    <!-- النجوم الملونة في الخلفية -->
+    <div class="star text-blue-400 top-12 left-1/4">★</div>
+    <div class="star text-yellow-500 top-20 right-1/4">★</div>
+    <div class="star text-red-400 top-1/3 left-10">★</div>
+    <div class="star text-green-400 top-1/2 right-12">★</div>
+    <div class="star text-orange-400 bottom-24 left-16">★</div>
+    <div class="star text-purple-400 bottom-16 right-1/3">★</div>
+
+    <!-- المحتوى التفاعلي -->
+    <div id="story-container" class="text-center max-w-lg z-10 fade-in">
+        
+        <h1 id="story-text" class="text-4xl md:text-5xl text-[#1a1a1a] tracking-wide mb-8 lowercase font-bold"></h1>
+        
+        <div id="box-wrapper" class="mb-10 flex justify-center">
+            <div class="image-box rounded-2xl w-64 h-80 flex items-center justify-center overflow-hidden p-1">
+                
+                <!-- تاغ الصورة -->
+                <img id="story-img" src="" alt="Birthday Content" class="w-full h-full object-contain hidden">
+                
+                <!-- تاغ الفيديو المضمون -->
+                <video id="story-vid" class="w-full h-full object-contain hidden" autoplay loop muted playsinline preload="auto"></video>
+            
+            </div>
+        </div>
+
+        <button onclick="nextStep()" 
+                class="border-2 border-black text-black text-xl px-8 py-1.5 rounded-full hover:bg-black hover:text-white transition-all duration-200 font-sans tracking-wide">
+            next :3
+        </button>
+    </div>
+
+    <script>
+        const steps = [
+            {
+                type: "text",
+                text: "someone has a special day today... 👀",
+                source: "" 
+            },
+            {
+                type: "image",
+                text: "happy 21 birthday lunaaaaa!",
+                source: "https://i.postimg.cc/VNs1dSGd/images.jpg" 
+            },
+            {
+                type: "video",
+                text: "let's do the happy dance! 🐾🎉",
+                // رابط فيديو خام ومباشر مرفوع على سيرفر سريع جداً ومفتوح
+                source: "https://cdn.discordapp.com/attachments/1068864077688770583/1215325774355042375/snoopy-dance.mp4" 
+            }
+        ];
+
+        let currentStep = 0;
+
+        function renderStep() {
+            const container = document.getElementById('story-container');
+            const textEl = document.getElementById('story-text');
+            const imgEl = document.getElementById('story-img');
+            const vidEl = document.getElementById('story-vid');
+            const boxWrapper = document.getElementById('box-wrapper');
+
+            container.classList.remove('fade-in');
+            void container.offsetWidth; 
+            container.classList.add('fade-in');
+
+            textEl.innerHTML = steps[currentStep].text;
+
+            const current = steps[currentStep];
+
+            if (current.type === "text") {
+                boxWrapper.style.display = "none";
+                imgEl.classList.add('hidden');
+                vidEl.classList.add('hidden');
+            } 
+            else if (current.type === "image") {
+                boxWrapper.style.display = "flex";
+                imgEl.classList.remove('hidden');
+                vidEl.classList.add('hidden');
+                imgEl.src = current.source;
+            } 
+            else if (current.type === "video") {
+                boxWrapper.style.display = "flex";
+                imgEl.classList.add('hidden');
+                vidEl.classList.remove('hidden');
+                
+                vidEl.src = current.source;
+                vidEl.load();
+                
+                // دالة تشغيل آمنة لتخطي حماية المتصفح
+                const playPromise = vidEl.play();
+                if (playPromise !== undefined) {
+                    playPromise.catch(error => {
+                        console.log("Autoplay context handled.");
+                    });
+                }
+            }
+        }
+
+        function nextStep() {
+            currentStep++;
+            if (currentStep >= steps.length) {
+                currentStep = 0;
+            }
+            renderStep();
+        }
+
+        window.onload = renderStep;
+    </script>
+</body>
+</html>
